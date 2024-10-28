@@ -1,0 +1,78 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "tree.h"
+#include "code_gen.h"
+#include "list.h"
+
+
+%}
+
+%start stat
+%term OP_RETURN=0 OP_ADD=1 OP_SUB=2 OP_MUL=3 OP_AND=4 OP_LESS=5 OP_EQUAL=6 OP_NUM=7 OP_THIS=8 OP_ID=9 OP_NOT=10 OP_PARAM_ID=11 OP_OBJ_VAR_ID=12 OP_ASSIGN=13
+
+%%
+
+stat: ret                                       #0#
+stat: assign                                    #0#
+
+ret:  OP_RETURN(expr)                           #1# asm_return_val_expr(bnode->reg);
+
+expr: const                                     #1# asm_move_val(bnode->val, bnode->reg);
+
+expr: OP_ADD(expr,expr)                         #1# asm_add(bnode->kids[1]->reg, bnode->kids[0]->reg);
+expr: OP_ADD(const,expr)                        #1# asm_add_val(bnode->kids[0]->val,bnode->kids[1]->reg); asm_move_from_to(bnode->kids[1]->reg, bnode->reg);
+expr: OP_ADD(expr,const)                        #1# asm_add_val(bnode->kids[1]->val,bnode->kids[0]->reg);
+
+expr: OP_MUL(expr,expr)                         #1# asm_mul(bnode->kids[1]->reg, bnode->kids[0]->reg);
+expr: OP_MUL(const,expr)                        #1# asm_mul_val(bnode->kids[0]->val, bnode->kids[1]->reg); asm_move_from_to(bnode->kids[1]->reg, bnode->reg);
+expr: OP_MUL(expr,const)                        #1# asm_mul_val(bnode->kids[1]->val, bnode->kids[0]->reg);
+
+expr: OP_AND(expr,expr)                         #1# asm_and(bnode->kids[1]->reg, bnode->kids[0]->reg);
+expr: OP_AND(const,expr)                        #1# asm_and_val(bnode->kids[0]->val, bnode->kids[1]->reg); asm_move_from_to(bnode->kids[1]->reg, bnode->reg);
+expr: OP_AND(expr,const)                        #1# asm_and_val(bnode->kids[1]->val, bnode->kids[0]->reg);
+
+expr: OP_SUB(expr,expr)                         #1# asm_sub(bnode->kids[1]->reg,bnode->kids[0]->reg);
+expr: OP_SUB(expr,const)                        #1# asm_sub_val_1(bnode->kids[1]->val, bnode->kids[0]->reg); asm_move_from_to(bnode->kids[0]->reg, bnode->reg);
+expr: OP_SUB(const,expr)                        #1# asm_sub_val_2(bnode->kids[1]->reg, bnode->kids[0]->val); asm_move_from_to(bnode->kids[1]->reg, bnode->reg);
+
+expr: OP_LESS(expr,expr)                        #1# asm_less(bnode->kids[0]->reg, bnode->kids[1]->reg, bnode->reg);
+expr: OP_LESS(const,expr)                       #1# asm_less_val_1(bnode->kids[0]->val, bnode->kids[1]->reg, bnode->reg);
+expr: OP_LESS(expr,const)                       #1# asm_less_val_2(bnode->kids[0]->reg, bnode->kids[1]->val, bnode->reg);
+
+expr: OP_EQUAL(expr,expr)                       #1# asm_equal(bnode->kids[0]->reg, bnode->kids[1]->reg, bnode->reg);
+expr: OP_EQUAL(const,expr)                      #1# asm_equal_val(bnode->kids[0]->val, bnode->kids[1]->reg, bnode->reg);
+expr: OP_EQUAL(expr,const)                      #1# asm_equal_val(bnode->kids[1]->val, bnode->kids[0]->reg, bnode->reg);
+
+expr: OP_NOT(expr)                              #1# asm_not(bnode->reg);
+
+expr: OP_PARAM_ID                               #1# if (bnode->index != -1) asm_move_from_to(get_parameter_reg(bnode->index), bnode->reg);
+expr: OP_OBJ_VAR_ID                             #1# if (bnode->index != -1) asm_move_from_obj_var(bnode->index, bnode->reg);
+expr: OP_ID                                     #1# if (bnode->index != -1) asm_move_from_stack(bnode->index, bnode->reg);
+
+expr: OP_THIS                                   #1# asm_move_from_to("rdi", bnode->reg);
+
+assign: OP_ASSIGN(OP_ID, const)                 #1# asm_move_val_to_stack(bnode->kids[1]->val, bnode->kids[0]->index);
+assign: OP_ASSIGN(OP_ID, expr)                  #1# asm_mov_reg_to_stack(bnode->kids[1]->reg, bnode->kids[0]->index);
+assign: OP_ASSIGN(OP_ID, OP_PARAM_ID)           #1# asm_mov_reg_to_stack(get_parameter_reg(bnode->kids[1]->index), bnode->kids[0]->index);
+
+assign: OP_ASSIGN(OP_PARAM_ID, const)           #1# asm_move_val(bnode->kids[1]->val, get_parameter_reg(bnode->kids[0]->index));
+assign: OP_ASSIGN(OP_PARAM_ID, expr)            #1# asm_move_from_to(bnode->kids[1]->reg, get_parameter_reg(bnode->kids[0]->index));
+assign: OP_ASSIGN(OP_PARAM_ID, OP_ID)           #1# asm_move_from_stack(bnode->kids[1]->index, get_parameter_reg(bnode->kids[0]->index));
+assign: OP_ASSIGN(OP_PARAM_ID, OP_PARAM_ID)     #1# asm_move_from_to(get_parameter_reg(bnode->kids[1]->index), get_parameter_reg(bnode->kids[0]->index));
+assign: OP_ASSIGN(OP_PARAM_ID, OP_OBJ_VAR_ID)   #1# asm_move_from_obj_var(bnode->kids[1]->index, get_parameter_reg(bnode->kids[0]->index));
+
+assign: OP_ASSIGN(OP_OBJ_VAR_ID, const)         #1# asm_move_val_to_obj_var(bnode->kids[0]->index, bnode->kids[1]->val);
+assign: OP_ASSIGN(OP_OBJ_VAR_ID, expr)          #1# asm_move_reg_to_obj_var(bnode->kids[0]->index, bnode->kids[1]->reg);
+assign: OP_ASSIGN(OP_OBJ_VAR_ID, OP_PARAM_ID)   #1# asm_move_reg_to_obj_var(bnode->kids[0]->index, get_parameter_reg(bnode->kids[1]->index));
+
+
+const: OP_NUM                                   #0#
+const: OP_AND(const,const)                      #0# bnode->val = bnode->kids[0]->val & bnode->kids[1]->val;
+const: OP_LESS(const,const)                     #0# bnode->val = bnode->kids[0]->val < bnode->kids[1]->val ? -1 : 0;
+const: OP_EQUAL(const,const)                    #0# bnode->val = bnode->kids[0]->val == bnode->kids[1]->val ? -1 : 0;
+const: OP_NOT(const)                            #0# bnode->val = ~bnode->kids[0]->val;
+
+%%

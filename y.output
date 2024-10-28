@@ -1,0 +1,1524 @@
+Grammar
+
+    0 $accept: yyyAugNonterm $end
+
+    1 $@1: %empty
+
+    2 yyyAugNonterm: $@1 Program
+
+    3 Program: %empty
+    4        | Program Interface ';'
+    5        | Program Class ';'
+
+    6 Interface: INTERFACE ID ':' Abstractmethod END
+
+    7 Abstractmethod: %empty
+    8               | ID '(' ')' ':' Type Abstractmethod
+    9               | ID '(' Abstractmethodtype Type ')' ':' Type Abstractmethod
+
+   10 Abstractmethodtype: %empty
+   11                   | Abstractmethodtype Type ','
+
+   12 Class: CLASS ID IMPLEMENTS Multids ':' Multmembers END
+
+   13 Multids: %empty
+   14        | Multids ID
+
+   15 Multmembers: %empty
+   16            | Member ';' Multmembers
+
+   17 Member: VAR ID ':' Type
+   18       | METHOD ID '(' Pars ')' Stats END
+
+   19 Type: INT
+   20     | ID
+
+   21 Pars: %empty
+   22     | Helppars Par
+
+   23 Helppars: %empty
+   24         | Helppars Par ','
+
+   25 Par: ID ':' Type
+
+   26 Stats: %empty
+   27      | Stat ';' Stats
+
+   28 Stat: RETURN Expr
+   29     | IF Expr THEN Stats ELSE Stats END
+   30     | IF Expr THEN Stats END
+   31     | WHILE Expr DO Stats END
+   32     | VAR ID ':' Type ASSIGN Expr
+   33     | ID ASSIGN Expr
+   34     | Expr
+
+   35 Expr: Notterm
+   36     | Plusterm
+   37     | Multterm
+   38     | Andterm
+   39     | Otherop
+   40     | Term
+   41     | NEW ID
+
+   42 Plusterm: Term '+' Term
+   43         | Plusterm '+' Term
+
+   44 Multterm: Term '*' Term
+   45         | Multterm '*' Term
+
+   46 Andterm: Term AND Term
+   47        | Andterm AND Term
+
+   48 Otherop: Term '-' Term
+   49        | Term '<' Term
+   50        | Term '=' Term
+
+   51 Notterm: NOT Term
+   52        | NOT Notterm
+
+   53 Term: '(' Expr ')'
+   54     | NUM
+   55     | THIS
+   56     | NUL ID
+   57     | ID
+   58     | Term '.' ID '(' ')'
+   59     | Term '.' ID '(' Multexpr Expr ')'
+
+   60 Multexpr: %empty
+   61         | Multexpr Expr ','
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 8 9 18 53 58 59
+')' (41) 8 9 18 53 58 59
+'*' (42) 44 45
+'+' (43) 42 43
+',' (44) 11 24 61
+'-' (45) 48
+'.' (46) 58 59
+':' (58) 6 8 9 12 17 25 32
+';' (59) 4 5 16 27
+'<' (60) 49
+'=' (61) 50
+error (256)
+INTERFACE (258) 6
+END (259) 6 12 18 29 30 31
+CLASS (260) 12
+IMPLEMENTS (261) 12
+VAR (262) 17 32
+METHOD (263) 18
+INT (264) 19
+RETURN (265) 28
+IF (266) 29 30
+THEN (267) 29 30
+ELSE (268) 29
+WHILE (269) 31
+DO (270) 31
+NOT (271) 51 52
+AND (272) 46 47
+NEW (273) 41
+THIS (274) 55
+NUL (275) 56
+ASSIGN (276) 32 33
+NUM (277) 54
+ID (278) 6 8 9 12 14 17 18 20 25 32 33 41 56 57 58 59
+
+
+Nonterminals, with rules where they appear
+
+$accept (35)
+    on left: 0
+yyyAugNonterm (36)
+    on left: 2, on right: 0
+$@1 (37)
+    on left: 1, on right: 2
+Program (38)
+    on left: 3 4 5, on right: 2 4 5
+Interface (39)
+    on left: 6, on right: 4
+Abstractmethod (40)
+    on left: 7 8 9, on right: 6 8 9
+Abstractmethodtype (41)
+    on left: 10 11, on right: 9 11
+Class (42)
+    on left: 12, on right: 5
+Multids (43)
+    on left: 13 14, on right: 12 14
+Multmembers (44)
+    on left: 15 16, on right: 12 16
+Member (45)
+    on left: 17 18, on right: 16
+Type (46)
+    on left: 19 20, on right: 8 9 11 17 25 32
+Pars (47)
+    on left: 21 22, on right: 18
+Helppars (48)
+    on left: 23 24, on right: 22 24
+Par (49)
+    on left: 25, on right: 22 24
+Stats (50)
+    on left: 26 27, on right: 18 27 29 30 31
+Stat (51)
+    on left: 28 29 30 31 32 33 34, on right: 27
+Expr (52)
+    on left: 35 36 37 38 39 40 41, on right: 28 29 30 31 32 33 34 53
+    59 61
+Plusterm (53)
+    on left: 42 43, on right: 36 43
+Multterm (54)
+    on left: 44 45, on right: 37 45
+Andterm (55)
+    on left: 46 47, on right: 38 47
+Otherop (56)
+    on left: 48 49 50, on right: 39
+Notterm (57)
+    on left: 51 52, on right: 35 52
+Term (58)
+    on left: 53 54 55 56 57 58 59, on right: 40 42 43 44 45 46 47 48
+    49 50 51 58 59
+Multexpr (59)
+    on left: 60 61, on right: 59 61
+
+
+State 0
+
+    0 $accept: . yyyAugNonterm $end
+
+    $default  reduce using rule 1 ($@1)
+
+    yyyAugNonterm  go to state 1
+    $@1            go to state 2
+
+
+State 1
+
+    0 $accept: yyyAugNonterm . $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    2 yyyAugNonterm: $@1 . Program
+
+    $default  reduce using rule 3 (Program)
+
+    Program  go to state 4
+
+
+State 3
+
+    0 $accept: yyyAugNonterm $end .
+
+    $default  accept
+
+
+State 4
+
+    2 yyyAugNonterm: $@1 Program .
+    4 Program: Program . Interface ';'
+    5        | Program . Class ';'
+
+    INTERFACE  shift, and go to state 5
+    CLASS      shift, and go to state 6
+
+    $default  reduce using rule 2 (yyyAugNonterm)
+
+    Interface  go to state 7
+    Class      go to state 8
+
+
+State 5
+
+    6 Interface: INTERFACE . ID ':' Abstractmethod END
+
+    ID  shift, and go to state 9
+
+
+State 6
+
+   12 Class: CLASS . ID IMPLEMENTS Multids ':' Multmembers END
+
+    ID  shift, and go to state 10
+
+
+State 7
+
+    4 Program: Program Interface . ';'
+
+    ';'  shift, and go to state 11
+
+
+State 8
+
+    5 Program: Program Class . ';'
+
+    ';'  shift, and go to state 12
+
+
+State 9
+
+    6 Interface: INTERFACE ID . ':' Abstractmethod END
+
+    ':'  shift, and go to state 13
+
+
+State 10
+
+   12 Class: CLASS ID . IMPLEMENTS Multids ':' Multmembers END
+
+    IMPLEMENTS  shift, and go to state 14
+
+
+State 11
+
+    4 Program: Program Interface ';' .
+
+    $default  reduce using rule 4 (Program)
+
+
+State 12
+
+    5 Program: Program Class ';' .
+
+    $default  reduce using rule 5 (Program)
+
+
+State 13
+
+    6 Interface: INTERFACE ID ':' . Abstractmethod END
+
+    ID  shift, and go to state 15
+
+    $default  reduce using rule 7 (Abstractmethod)
+
+    Abstractmethod  go to state 16
+
+
+State 14
+
+   12 Class: CLASS ID IMPLEMENTS . Multids ':' Multmembers END
+
+    $default  reduce using rule 13 (Multids)
+
+    Multids  go to state 17
+
+
+State 15
+
+    8 Abstractmethod: ID . '(' ')' ':' Type Abstractmethod
+    9               | ID . '(' Abstractmethodtype Type ')' ':' Type Abstractmethod
+
+    '('  shift, and go to state 18
+
+
+State 16
+
+    6 Interface: INTERFACE ID ':' Abstractmethod . END
+
+    END  shift, and go to state 19
+
+
+State 17
+
+   12 Class: CLASS ID IMPLEMENTS Multids . ':' Multmembers END
+   14 Multids: Multids . ID
+
+    ID   shift, and go to state 20
+    ':'  shift, and go to state 21
+
+
+State 18
+
+    8 Abstractmethod: ID '(' . ')' ':' Type Abstractmethod
+    9               | ID '(' . Abstractmethodtype Type ')' ':' Type Abstractmethod
+
+    ')'  shift, and go to state 22
+
+    $default  reduce using rule 10 (Abstractmethodtype)
+
+    Abstractmethodtype  go to state 23
+
+
+State 19
+
+    6 Interface: INTERFACE ID ':' Abstractmethod END .
+
+    $default  reduce using rule 6 (Interface)
+
+
+State 20
+
+   14 Multids: Multids ID .
+
+    $default  reduce using rule 14 (Multids)
+
+
+State 21
+
+   12 Class: CLASS ID IMPLEMENTS Multids ':' . Multmembers END
+
+    VAR     shift, and go to state 24
+    METHOD  shift, and go to state 25
+
+    $default  reduce using rule 15 (Multmembers)
+
+    Multmembers  go to state 26
+    Member       go to state 27
+
+
+State 22
+
+    8 Abstractmethod: ID '(' ')' . ':' Type Abstractmethod
+
+    ':'  shift, and go to state 28
+
+
+State 23
+
+    9 Abstractmethod: ID '(' Abstractmethodtype . Type ')' ':' Type Abstractmethod
+   11 Abstractmethodtype: Abstractmethodtype . Type ','
+
+    INT  shift, and go to state 29
+    ID   shift, and go to state 30
+
+    Type  go to state 31
+
+
+State 24
+
+   17 Member: VAR . ID ':' Type
+
+    ID  shift, and go to state 32
+
+
+State 25
+
+   18 Member: METHOD . ID '(' Pars ')' Stats END
+
+    ID  shift, and go to state 33
+
+
+State 26
+
+   12 Class: CLASS ID IMPLEMENTS Multids ':' Multmembers . END
+
+    END  shift, and go to state 34
+
+
+State 27
+
+   16 Multmembers: Member . ';' Multmembers
+
+    ';'  shift, and go to state 35
+
+
+State 28
+
+    8 Abstractmethod: ID '(' ')' ':' . Type Abstractmethod
+
+    INT  shift, and go to state 29
+    ID   shift, and go to state 30
+
+    Type  go to state 36
+
+
+State 29
+
+   19 Type: INT .
+
+    $default  reduce using rule 19 (Type)
+
+
+State 30
+
+   20 Type: ID .
+
+    $default  reduce using rule 20 (Type)
+
+
+State 31
+
+    9 Abstractmethod: ID '(' Abstractmethodtype Type . ')' ':' Type Abstractmethod
+   11 Abstractmethodtype: Abstractmethodtype Type . ','
+
+    ')'  shift, and go to state 37
+    ','  shift, and go to state 38
+
+
+State 32
+
+   17 Member: VAR ID . ':' Type
+
+    ':'  shift, and go to state 39
+
+
+State 33
+
+   18 Member: METHOD ID . '(' Pars ')' Stats END
+
+    '('  shift, and go to state 40
+
+
+State 34
+
+   12 Class: CLASS ID IMPLEMENTS Multids ':' Multmembers END .
+
+    $default  reduce using rule 12 (Class)
+
+
+State 35
+
+   16 Multmembers: Member ';' . Multmembers
+
+    VAR     shift, and go to state 24
+    METHOD  shift, and go to state 25
+
+    $default  reduce using rule 15 (Multmembers)
+
+    Multmembers  go to state 41
+    Member       go to state 27
+
+
+State 36
+
+    8 Abstractmethod: ID '(' ')' ':' Type . Abstractmethod
+
+    ID  shift, and go to state 15
+
+    $default  reduce using rule 7 (Abstractmethod)
+
+    Abstractmethod  go to state 42
+
+
+State 37
+
+    9 Abstractmethod: ID '(' Abstractmethodtype Type ')' . ':' Type Abstractmethod
+
+    ':'  shift, and go to state 43
+
+
+State 38
+
+   11 Abstractmethodtype: Abstractmethodtype Type ',' .
+
+    $default  reduce using rule 11 (Abstractmethodtype)
+
+
+State 39
+
+   17 Member: VAR ID ':' . Type
+
+    INT  shift, and go to state 29
+    ID   shift, and go to state 30
+
+    Type  go to state 44
+
+
+State 40
+
+   18 Member: METHOD ID '(' . Pars ')' Stats END
+
+    ID        reduce using rule 23 (Helppars)
+    $default  reduce using rule 21 (Pars)
+
+    Pars      go to state 45
+    Helppars  go to state 46
+
+
+State 41
+
+   16 Multmembers: Member ';' Multmembers .
+
+    $default  reduce using rule 16 (Multmembers)
+
+
+State 42
+
+    8 Abstractmethod: ID '(' ')' ':' Type Abstractmethod .
+
+    $default  reduce using rule 8 (Abstractmethod)
+
+
+State 43
+
+    9 Abstractmethod: ID '(' Abstractmethodtype Type ')' ':' . Type Abstractmethod
+
+    INT  shift, and go to state 29
+    ID   shift, and go to state 30
+
+    Type  go to state 47
+
+
+State 44
+
+   17 Member: VAR ID ':' Type .
+
+    $default  reduce using rule 17 (Member)
+
+
+State 45
+
+   18 Member: METHOD ID '(' Pars . ')' Stats END
+
+    ')'  shift, and go to state 48
+
+
+State 46
+
+   22 Pars: Helppars . Par
+   24 Helppars: Helppars . Par ','
+
+    ID  shift, and go to state 49
+
+    Par  go to state 50
+
+
+State 47
+
+    9 Abstractmethod: ID '(' Abstractmethodtype Type ')' ':' Type . Abstractmethod
+
+    ID  shift, and go to state 15
+
+    $default  reduce using rule 7 (Abstractmethod)
+
+    Abstractmethod  go to state 51
+
+
+State 48
+
+   18 Member: METHOD ID '(' Pars ')' . Stats END
+
+    VAR     shift, and go to state 52
+    RETURN  shift, and go to state 53
+    IF      shift, and go to state 54
+    WHILE   shift, and go to state 55
+    NOT     shift, and go to state 56
+    NEW     shift, and go to state 57
+    THIS    shift, and go to state 58
+    NUL     shift, and go to state 59
+    NUM     shift, and go to state 60
+    ID      shift, and go to state 61
+    '('     shift, and go to state 62
+
+    $default  reduce using rule 26 (Stats)
+
+    Stats     go to state 63
+    Stat      go to state 64
+    Expr      go to state 65
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 49
+
+   25 Par: ID . ':' Type
+
+    ':'  shift, and go to state 72
+
+
+State 50
+
+   22 Pars: Helppars Par .
+   24 Helppars: Helppars Par . ','
+
+    ','  shift, and go to state 73
+
+    $default  reduce using rule 22 (Pars)
+
+
+State 51
+
+    9 Abstractmethod: ID '(' Abstractmethodtype Type ')' ':' Type Abstractmethod .
+
+    $default  reduce using rule 9 (Abstractmethod)
+
+
+State 52
+
+   32 Stat: VAR . ID ':' Type ASSIGN Expr
+
+    ID  shift, and go to state 74
+
+
+State 53
+
+   28 Stat: RETURN . Expr
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 76
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 54
+
+   29 Stat: IF . Expr THEN Stats ELSE Stats END
+   30     | IF . Expr THEN Stats END
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 77
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 55
+
+   31 Stat: WHILE . Expr DO Stats END
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 78
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 56
+
+   51 Notterm: NOT . Term
+   52        | NOT . Notterm
+
+    NOT   shift, and go to state 56
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Notterm  go to state 79
+    Term     go to state 80
+
+
+State 57
+
+   41 Expr: NEW . ID
+
+    ID  shift, and go to state 81
+
+
+State 58
+
+   55 Term: THIS .
+
+    $default  reduce using rule 55 (Term)
+
+
+State 59
+
+   56 Term: NUL . ID
+
+    ID  shift, and go to state 82
+
+
+State 60
+
+   54 Term: NUM .
+
+    $default  reduce using rule 54 (Term)
+
+
+State 61
+
+   33 Stat: ID . ASSIGN Expr
+   57 Term: ID .
+
+    ASSIGN  shift, and go to state 83
+
+    $default  reduce using rule 57 (Term)
+
+
+State 62
+
+   53 Term: '(' . Expr ')'
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 84
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 63
+
+   18 Member: METHOD ID '(' Pars ')' Stats . END
+
+    END  shift, and go to state 85
+
+
+State 64
+
+   27 Stats: Stat . ';' Stats
+
+    ';'  shift, and go to state 86
+
+
+State 65
+
+   34 Stat: Expr .
+
+    $default  reduce using rule 34 (Stat)
+
+
+State 66
+
+   36 Expr: Plusterm .
+   43 Plusterm: Plusterm . '+' Term
+
+    '+'  shift, and go to state 87
+
+    $default  reduce using rule 36 (Expr)
+
+
+State 67
+
+   37 Expr: Multterm .
+   45 Multterm: Multterm . '*' Term
+
+    '*'  shift, and go to state 88
+
+    $default  reduce using rule 37 (Expr)
+
+
+State 68
+
+   38 Expr: Andterm .
+   47 Andterm: Andterm . AND Term
+
+    AND  shift, and go to state 89
+
+    $default  reduce using rule 38 (Expr)
+
+
+State 69
+
+   39 Expr: Otherop .
+
+    $default  reduce using rule 39 (Expr)
+
+
+State 70
+
+   35 Expr: Notterm .
+
+    $default  reduce using rule 35 (Expr)
+
+
+State 71
+
+   40 Expr: Term .
+   42 Plusterm: Term . '+' Term
+   44 Multterm: Term . '*' Term
+   46 Andterm: Term . AND Term
+   48 Otherop: Term . '-' Term
+   49        | Term . '<' Term
+   50        | Term . '=' Term
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    AND  shift, and go to state 90
+    '+'  shift, and go to state 91
+    '*'  shift, and go to state 92
+    '-'  shift, and go to state 93
+    '<'  shift, and go to state 94
+    '='  shift, and go to state 95
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 40 (Expr)
+
+
+State 72
+
+   25 Par: ID ':' . Type
+
+    INT  shift, and go to state 29
+    ID   shift, and go to state 30
+
+    Type  go to state 97
+
+
+State 73
+
+   24 Helppars: Helppars Par ',' .
+
+    $default  reduce using rule 24 (Helppars)
+
+
+State 74
+
+   32 Stat: VAR ID . ':' Type ASSIGN Expr
+
+    ':'  shift, and go to state 98
+
+
+State 75
+
+   57 Term: ID .
+
+    $default  reduce using rule 57 (Term)
+
+
+State 76
+
+   28 Stat: RETURN Expr .
+
+    $default  reduce using rule 28 (Stat)
+
+
+State 77
+
+   29 Stat: IF Expr . THEN Stats ELSE Stats END
+   30     | IF Expr . THEN Stats END
+
+    THEN  shift, and go to state 99
+
+
+State 78
+
+   31 Stat: WHILE Expr . DO Stats END
+
+    DO  shift, and go to state 100
+
+
+State 79
+
+   52 Notterm: NOT Notterm .
+
+    $default  reduce using rule 52 (Notterm)
+
+
+State 80
+
+   51 Notterm: NOT Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 51 (Notterm)
+
+
+State 81
+
+   41 Expr: NEW ID .
+
+    $default  reduce using rule 41 (Expr)
+
+
+State 82
+
+   56 Term: NUL ID .
+
+    $default  reduce using rule 56 (Term)
+
+
+State 83
+
+   33 Stat: ID ASSIGN . Expr
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 101
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 84
+
+   53 Term: '(' Expr . ')'
+
+    ')'  shift, and go to state 102
+
+
+State 85
+
+   18 Member: METHOD ID '(' Pars ')' Stats END .
+
+    $default  reduce using rule 18 (Member)
+
+
+State 86
+
+   27 Stats: Stat ';' . Stats
+
+    VAR     shift, and go to state 52
+    RETURN  shift, and go to state 53
+    IF      shift, and go to state 54
+    WHILE   shift, and go to state 55
+    NOT     shift, and go to state 56
+    NEW     shift, and go to state 57
+    THIS    shift, and go to state 58
+    NUL     shift, and go to state 59
+    NUM     shift, and go to state 60
+    ID      shift, and go to state 61
+    '('     shift, and go to state 62
+
+    $default  reduce using rule 26 (Stats)
+
+    Stats     go to state 103
+    Stat      go to state 64
+    Expr      go to state 65
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 87
+
+   43 Plusterm: Plusterm '+' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 104
+
+
+State 88
+
+   45 Multterm: Multterm '*' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 105
+
+
+State 89
+
+   47 Andterm: Andterm AND . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 106
+
+
+State 90
+
+   46 Andterm: Term AND . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 107
+
+
+State 91
+
+   42 Plusterm: Term '+' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 108
+
+
+State 92
+
+   44 Multterm: Term '*' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 109
+
+
+State 93
+
+   48 Otherop: Term '-' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 110
+
+
+State 94
+
+   49 Otherop: Term '<' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 111
+
+
+State 95
+
+   50 Otherop: Term '=' . Term
+
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Term  go to state 112
+
+
+State 96
+
+   58 Term: Term '.' . ID '(' ')'
+   59     | Term '.' . ID '(' Multexpr Expr ')'
+
+    ID  shift, and go to state 113
+
+
+State 97
+
+   25 Par: ID ':' Type .
+
+    $default  reduce using rule 25 (Par)
+
+
+State 98
+
+   32 Stat: VAR ID ':' . Type ASSIGN Expr
+
+    INT  shift, and go to state 29
+    ID   shift, and go to state 30
+
+    Type  go to state 114
+
+
+State 99
+
+   29 Stat: IF Expr THEN . Stats ELSE Stats END
+   30     | IF Expr THEN . Stats END
+
+    VAR     shift, and go to state 52
+    RETURN  shift, and go to state 53
+    IF      shift, and go to state 54
+    WHILE   shift, and go to state 55
+    NOT     shift, and go to state 56
+    NEW     shift, and go to state 57
+    THIS    shift, and go to state 58
+    NUL     shift, and go to state 59
+    NUM     shift, and go to state 60
+    ID      shift, and go to state 61
+    '('     shift, and go to state 62
+
+    $default  reduce using rule 26 (Stats)
+
+    Stats     go to state 115
+    Stat      go to state 64
+    Expr      go to state 65
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 100
+
+   31 Stat: WHILE Expr DO . Stats END
+
+    VAR     shift, and go to state 52
+    RETURN  shift, and go to state 53
+    IF      shift, and go to state 54
+    WHILE   shift, and go to state 55
+    NOT     shift, and go to state 56
+    NEW     shift, and go to state 57
+    THIS    shift, and go to state 58
+    NUL     shift, and go to state 59
+    NUM     shift, and go to state 60
+    ID      shift, and go to state 61
+    '('     shift, and go to state 62
+
+    $default  reduce using rule 26 (Stats)
+
+    Stats     go to state 116
+    Stat      go to state 64
+    Expr      go to state 65
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 101
+
+   33 Stat: ID ASSIGN Expr .
+
+    $default  reduce using rule 33 (Stat)
+
+
+State 102
+
+   53 Term: '(' Expr ')' .
+
+    $default  reduce using rule 53 (Term)
+
+
+State 103
+
+   27 Stats: Stat ';' Stats .
+
+    $default  reduce using rule 27 (Stats)
+
+
+State 104
+
+   43 Plusterm: Plusterm '+' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 43 (Plusterm)
+
+
+State 105
+
+   45 Multterm: Multterm '*' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 45 (Multterm)
+
+
+State 106
+
+   47 Andterm: Andterm AND Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 47 (Andterm)
+
+
+State 107
+
+   46 Andterm: Term AND Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 46 (Andterm)
+
+
+State 108
+
+   42 Plusterm: Term '+' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 42 (Plusterm)
+
+
+State 109
+
+   44 Multterm: Term '*' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 44 (Multterm)
+
+
+State 110
+
+   48 Otherop: Term '-' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 48 (Otherop)
+
+
+State 111
+
+   49 Otherop: Term '<' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 49 (Otherop)
+
+
+State 112
+
+   50 Otherop: Term '=' Term .
+   58 Term: Term . '.' ID '(' ')'
+   59     | Term . '.' ID '(' Multexpr Expr ')'
+
+    '.'  shift, and go to state 96
+
+    $default  reduce using rule 50 (Otherop)
+
+
+State 113
+
+   58 Term: Term '.' ID . '(' ')'
+   59     | Term '.' ID . '(' Multexpr Expr ')'
+
+    '('  shift, and go to state 117
+
+
+State 114
+
+   32 Stat: VAR ID ':' Type . ASSIGN Expr
+
+    ASSIGN  shift, and go to state 118
+
+
+State 115
+
+   29 Stat: IF Expr THEN Stats . ELSE Stats END
+   30     | IF Expr THEN Stats . END
+
+    END   shift, and go to state 119
+    ELSE  shift, and go to state 120
+
+
+State 116
+
+   31 Stat: WHILE Expr DO Stats . END
+
+    END  shift, and go to state 121
+
+
+State 117
+
+   58 Term: Term '.' ID '(' . ')'
+   59     | Term '.' ID '(' . Multexpr Expr ')'
+
+    ')'  shift, and go to state 122
+
+    $default  reduce using rule 60 (Multexpr)
+
+    Multexpr  go to state 123
+
+
+State 118
+
+   32 Stat: VAR ID ':' Type ASSIGN . Expr
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 124
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 119
+
+   30 Stat: IF Expr THEN Stats END .
+
+    $default  reduce using rule 30 (Stat)
+
+
+State 120
+
+   29 Stat: IF Expr THEN Stats ELSE . Stats END
+
+    VAR     shift, and go to state 52
+    RETURN  shift, and go to state 53
+    IF      shift, and go to state 54
+    WHILE   shift, and go to state 55
+    NOT     shift, and go to state 56
+    NEW     shift, and go to state 57
+    THIS    shift, and go to state 58
+    NUL     shift, and go to state 59
+    NUM     shift, and go to state 60
+    ID      shift, and go to state 61
+    '('     shift, and go to state 62
+
+    $default  reduce using rule 26 (Stats)
+
+    Stats     go to state 125
+    Stat      go to state 64
+    Expr      go to state 65
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 121
+
+   31 Stat: WHILE Expr DO Stats END .
+
+    $default  reduce using rule 31 (Stat)
+
+
+State 122
+
+   58 Term: Term '.' ID '(' ')' .
+
+    $default  reduce using rule 58 (Term)
+
+
+State 123
+
+   59 Term: Term '.' ID '(' Multexpr . Expr ')'
+   61 Multexpr: Multexpr . Expr ','
+
+    NOT   shift, and go to state 56
+    NEW   shift, and go to state 57
+    THIS  shift, and go to state 58
+    NUL   shift, and go to state 59
+    NUM   shift, and go to state 60
+    ID    shift, and go to state 75
+    '('   shift, and go to state 62
+
+    Expr      go to state 126
+    Plusterm  go to state 66
+    Multterm  go to state 67
+    Andterm   go to state 68
+    Otherop   go to state 69
+    Notterm   go to state 70
+    Term      go to state 71
+
+
+State 124
+
+   32 Stat: VAR ID ':' Type ASSIGN Expr .
+
+    $default  reduce using rule 32 (Stat)
+
+
+State 125
+
+   29 Stat: IF Expr THEN Stats ELSE Stats . END
+
+    END  shift, and go to state 127
+
+
+State 126
+
+   59 Term: Term '.' ID '(' Multexpr Expr . ')'
+   61 Multexpr: Multexpr Expr . ','
+
+    ')'  shift, and go to state 128
+    ','  shift, and go to state 129
+
+
+State 127
+
+   29 Stat: IF Expr THEN Stats ELSE Stats END .
+
+    $default  reduce using rule 29 (Stat)
+
+
+State 128
+
+   59 Term: Term '.' ID '(' Multexpr Expr ')' .
+
+    $default  reduce using rule 59 (Term)
+
+
+State 129
+
+   61 Multexpr: Multexpr Expr ',' .
+
+    $default  reduce using rule 61 (Multexpr)
